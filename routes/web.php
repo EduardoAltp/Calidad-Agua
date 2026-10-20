@@ -16,6 +16,7 @@ Route::inertia('/', 'Welcome')->name('home');
     return view('info-sistema');
 });
 
+  Route::resource('reporte',App\Http\Controllers\ReportesController::class);
 });
 
 require __DIR__.'/settings.php';
