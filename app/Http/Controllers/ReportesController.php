@@ -12,7 +12,7 @@ class ReportesController extends Controller
      */
     public function index()
     {
-        //
+        return view('reportes.listar-reportes') -> with('reportes', reportes::all());
     }
 
     /**
