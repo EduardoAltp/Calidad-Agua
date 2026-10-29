@@ -9,7 +9,7 @@
 </head>
 <body>
     <h1>Crea tu reporte:</h1>
-    <form action="{{ route('reportes.store') }}" method="POST">
+    <form action="{{ route('reporte.store') }}" method="POST">
         @csrf
         <div>
             <label for='descripcion'>Descripción:</label>
