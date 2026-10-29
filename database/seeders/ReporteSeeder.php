@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Reporte;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,8 @@ class ReporteSeeder extends Seeder
      */
     public function run(): void
     {
+        Reporte::factory()->count(10)->create();
+        /*
         Reporte::create([
             'user_id' => 1,
             'ubicacion' => 'Casa x',
@@ -25,6 +28,6 @@ class ReporteSeeder extends Seeder
         'fecha_inicio' => '2026-05-05',
         'created_at' => now(),
         'updated_at' => now()
-        ]);
+        ]);*/
     }
 }
