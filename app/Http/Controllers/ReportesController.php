@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\reportes;
+use App\Models\Reporte;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportesController extends Controller
 {
@@ -12,7 +13,11 @@ class ReportesController extends Controller
      */
     public function index()
     {
-        return view('reportes.listar-reportes') -> with('reportes', reportes::all());
+        
+        //$reportes =Reporte::where('user_id', auth()->id())->get();
+        return view('reportes.listar-reportes')->with([
+    'reportes' => Auth::user()->reportes->sortByDesc('id'),
+        ]);
     }
 
     /**
@@ -28,20 +33,23 @@ class ReportesController extends Controller
      */
     public function store(Request $request)
     {
-        $reporte = new reportes();
-        $reporte->user_id = auth()->user()->id;
-        $reporte->descripcion = $request->descripcion;
-        $reporte->ubicacion = $request->ubicacion;
-        $reporte->fecha_inicio = $request->fecha_inicio;
-        $reporte->save();
+        $request->merge(['user_id' => auth()->id()]);
+        Reporte::create($request->all());
+       // $reporte = new reportes();
+       // $reporte->user_id = auth()->user()->id;
+       // $reporte->descripcion = $request->descripcion;
+       // $reporte->ubicacion = $request->ubicacion;
+       // $reporte->fecha_inicio = $request->fecha_inicio;
+       // $reporte->save();
 
-        return redirect()->back();
+        return redirect()->route('reporte.index')
+        ->with('success', 'Reporte creado correctamente.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(reportes $reportes)
+    public function show(Reporte $reporte)
     {
         //
     }
@@ -49,24 +57,36 @@ class ReportesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(reportes $reportes)
+    public function edit(Reporte $reporte)
     {
-        //
+        abort_if($reporte->user_id !== auth()->id(), 403);
+
+    return view('reportes.editar-reporte', compact('reporte'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, reportes $reportes)
+    public function update(Request $request, Reporte $reporte)
     {
-        //
+        abort_if($reporte->user_id !== auth()->id(), 403);
+
+    $reporte->update($request->only(['ubicacion', 'descripcion', 'fecha_inicio']));
+
+    return redirect()->route('reporte.index')
+        ->with('success', 'Reporte actualizado correctamente.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(reportes $reportes)
+    public function destroy(Reporte $reporte)
     {
-        //
+         abort_if($reporte->user_id !== auth()->id(), 403);
+
+    $reporte->delete();
+
+    return redirect()->route('reporte.index')
+        ->with('success', 'Reporte eliminado correctamente.');
     }
 }
